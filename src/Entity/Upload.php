@@ -32,6 +32,9 @@ class Upload
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $updatedAt;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'uploads')]
+    private $uploadedBy;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,4 +65,23 @@ class Upload
     {
         return $this->imageFile;
     }
+
+    public function getUploadedBy(): ?User
+    {
+        return $this->uploadedBy;
+    }
+
+    public function setUploadedBy(?User $uploadedBy): self
+    {
+        $this->uploadedBy = $uploadedBy;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+
 }
