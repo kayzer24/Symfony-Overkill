@@ -19,6 +19,7 @@ class OverkillController extends AbstractController
     #[Route('/', name: 'overkill')]
     public function index(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $upload = new Upload();
         $form = $this->createForm(UploadType::class, $upload)->handleRequest($request);
 
