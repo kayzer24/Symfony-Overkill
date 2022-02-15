@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Upload;
 use App\Form\UploadType;
+use App\Message\UploadMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OverkillController extends AbstractController
@@ -17,7 +19,7 @@ class OverkillController extends AbstractController
     }
 
     #[Route('/', name: 'overkill')]
-    public function index(Request $request): Response
+    public function index(Request $request, MessageBusInterface $bus): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -29,6 +31,8 @@ class OverkillController extends AbstractController
 
             $this->entityManager->persist($upload);
             $this->entityManager->flush();
+
+            $bus->dispatch(new UploadMessage(upload: $upload->getImageFile(), user: $this->getUser()->getUserIdentifier()));
 
             return $this->redirectToRoute('overkill');
         }
